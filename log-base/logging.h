@@ -2,10 +2,11 @@
 #define _LOGGING_H_
 
 #include "log_base.h"
-
+#include <string.h>
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define LogMessageBaseHeader(level)         LogMessage(LOG_LEVEL_##level)
-#define LogMessageDetailedHeader(level)     LogMessage(LOG_LEVEL_##level, __FILE__, __LINE__)
+#define LogMessageDetailedHeader(level)     LogMessage(LOG_LEVEL_##level, __FILENAME__, __LINE__)
 
 #define LOG_IF(level, condition) \
         !(condition) ? (void)0 : DummyLogDecorator() & LogMessageDetailedHeader(level).stream()

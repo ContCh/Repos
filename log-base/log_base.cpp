@@ -38,7 +38,7 @@ void LogStream::setPrefix(uint32_t level, const char* file, int line) {
     if (file != nullptr) {
         oss << '[' << file << ':' << line << ']';
     }
-    oss << color_end;
+    oss << color_end << ' ';
 }
 
 void LogStream::Flush() {
