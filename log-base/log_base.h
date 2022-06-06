@@ -12,19 +12,31 @@ enum {
     LOG_LEVEL_FATAL = 4
 };
 
-class LogStream { //: public std::ostream {
+class LogStreamBuffer : public std::streambuf {
+public:
+    LogStreamBuffer(char* buf_begin, int len) {
+        setp(buf_begin, buf_begin + len - 2);
+    }
+
+    size_t pcount() const { return pptr() - pbase(); }
+    char* pbase() const { return std::streambuf::pbase(); }
+};
+
+constexpr int MaxBufferLen = 1024;
+
+class LogStream : public std::ostream { //: public std::ostream {
  public:
+    LogStream();
     void setPrefix(uint32_t level, const char* file = nullptr, int line = -1);
 
-    template <class Type>
-    LogStream& operator<<(Type in) {
-        oss << in;
-        return *this;
-    }
     void Flush();
 
  private:
-    std::ostringstream oss;
+    char buffer_[MaxBufferLen];
+    LogStreamBuffer stream_buf_;
+    // Avoid copy construct.
+    LogStream& operator=(const LogStream&);
+    LogStream(const LogStream&);
 };
 
 class LogMessage {
@@ -45,7 +57,8 @@ class LogMessage {
 
 class DummyLogDecorator {
  public:
-    void operator&(const LogStream&) {}
+    // Why I cannot use LogStream& ?
+    void operator&(const std::ostream&) {}
 };
 
 #endif //_LOG_BASE_H

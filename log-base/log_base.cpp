@@ -29,20 +29,24 @@ void getCurrentTime(char* time_buf) {
 }
 
 /**************************************************************************************/
+LogStream::LogStream()
+    : stream_buf_(buffer_, MaxBufferLen) {
+    rdbuf(&stream_buf_);
+}
 
 void LogStream::setPrefix(uint32_t level, const char* file, int line) {
     char cur_time[40];
     getCurrentTime(cur_time);
-    oss << color_start[level] << "[" << log_level_str[level] << "]["
-        << cur_time << ']';
+    (*this) << color_start[level] << "[" << log_level_str[level] << "]["
+            << cur_time << ']';
     if (file != nullptr) {
-        oss << '[' << file << ':' << line << ']';
+        (*this) << '[' << file << ':' << line << ']';
     }
-    oss << color_end << ' ';
+    (*this) << color_end << ' ';
 }
 
 void LogStream::Flush() {
-    std::cerr << oss.str() << std::flush;
+    std::cerr << buffer_ << std::flush;
 }
 
 LogMessage::LogMessage(uint32_t level) : level_(level) {
