@@ -30,7 +30,10 @@ int main() {
     LOG(INFO) << "String: " << str << '\n';
     Point point(-5, 10);
     LOG(WARN) << point << " won't be showed here.\n";
-    DLOG(FATAL) << "Should Not Abort because no debug!\n";
+    DLOG(FATAL) << "Should Not Abort because no debug!";
+    LOG(ERROR) << "Not true " << 1009;
+    LOG(INFO)  << "Test appendLine.";
+    CHECK_EQ(2, 2.0);
     const int line = __LINE__ + 1;
-    LOG(FATAL) << "Abort at LINE " << line << '\n';
+    LOG(FATAL) << "Abort at LINE " << line << std::endl;
 }

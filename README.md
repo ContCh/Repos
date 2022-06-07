@@ -6,3 +6,6 @@
 It is convenient to build various tools for us, and these tools are all minimal version.
 This means, we don't intend to make each project too large or complicated. Thus, basic
 functions are included, extension should be added yourself if you want.
+
+
++ log-base

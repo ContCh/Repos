@@ -34,31 +34,39 @@ LogStream::LogStream()
     rdbuf(&stream_buf_);
 }
 
-void LogStream::setPrefix(uint32_t level, const char* file, int line) {
-    char cur_time[40];
-    getCurrentTime(cur_time);
-    (*this) << color_start[level] << "[" << log_level_str[level] << "]["
-            << cur_time << ']';
-    if (file != nullptr) {
-        (*this) << '[' << file << ':' << line << ']';
+void LogStream::Flush() {
+    size_t num_chars = stream_buf_.pcount();
+    char* last_char = stream_buf_.pbase() + num_chars;
+    if (*(last_char - 1) != '\n') {
+        *last_char = '\n';
+        num_chars++;
     }
-    (*this) << color_end << ' ';
+    fwrite(stream_buf_.pbase(), 1, num_chars, stderr);
+    std::fflush(stderr);
 }
 
-void LogStream::Flush() {
-    std::cerr << buffer_ << std::flush;
+void LogMessage::initLogStream(uint32_t level, const char* file, int line) {
+    log_stream_.flush();
+    char cur_time[40];
+    getCurrentTime(cur_time);
+    log_stream_ << color_start[level] << "[" << log_level_str[level] << "]["
+                << cur_time << ']';
+    if (file != nullptr) {
+        log_stream_ << '[' << file << ':' << line << ']';
+    }
+    log_stream_ << color_end << ' ';
 }
 
 LogMessage::LogMessage(uint32_t level) : level_(level) {
-    log_stream_.setPrefix(level);
+    initLogStream(level);
 }
 
 LogMessage::LogMessage(uint32_t level, const char* file, int line)
     : level_(level) {
-    log_stream_.setPrefix(level, file, line);
+    initLogStream(level, file, line);
 }
 
-LogStream& LogMessage::stream() {
+std::ostream& LogMessage::stream() {
     return this->log_stream_;
 }
 

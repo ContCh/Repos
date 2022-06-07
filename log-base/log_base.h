@@ -27,7 +27,6 @@ constexpr int MaxBufferLen = 1024;
 class LogStream : public std::ostream { //: public std::ostream {
  public:
     LogStream();
-    void setPrefix(uint32_t level, const char* file = nullptr, int line = -1);
 
     void Flush();
 
@@ -45,7 +44,9 @@ class LogMessage {
 
     LogMessage(uint32_t level, const char* file, int line);
 
-    LogStream& stream();
+    void initLogStream(uint32_t level, const char* file = nullptr, int line = -1);
+
+    std::ostream& stream();
 
     ~LogMessage();
 
@@ -57,7 +58,6 @@ class LogMessage {
 
 class DummyLogDecorator {
  public:
-    // Why I cannot use LogStream& ?
     void operator&(const std::ostream&) {}
 };
 
