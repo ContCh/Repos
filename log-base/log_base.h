@@ -2,7 +2,7 @@
 #define _LOG_BASE_H
 
 #include <iostream>
-#include <sstream>
+#include <string>
 
 enum {
     LOG_LEVEL_INFO  = 0,
@@ -11,6 +11,15 @@ enum {
     LOG_LEVEL_TEMP  = 3,
     LOG_LEVEL_FATAL = 4
 };
+
+struct LogSettings {
+    static uint32_t allow_output_log_level;
+    static std::string output_destination;
+    static bool log_to_stderr;
+};
+
+void logSettingInitialize(uint32_t    minimum_log_level = 0,
+                          std::string destination       = "");
 
 class LogStreamBuffer : public std::streambuf {
 public:

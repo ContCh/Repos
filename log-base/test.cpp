@@ -25,6 +25,7 @@ std::ostream& operator<<(std::ostream& os, const Point pt) {
 }
 
 int main() {
+    logSettingInitialize(0);
     std::string str = " It is a message.";
     // We cannot use std::endl, so the project need to be updated
     LOG(INFO) << "String: " << str << '\n';

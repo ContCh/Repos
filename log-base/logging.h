@@ -5,14 +5,13 @@
 #include <string.h>
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define LogMessageBaseHeader(level)         LogMessage(LOG_LEVEL_##level)
-#define LogMessageDetailedHeader(level)     LogMessage(LOG_LEVEL_##level, __FILENAME__, __LINE__)
+#define LogMessageHeader(level)     LogMessage(LOG_LEVEL_##level, __FILENAME__, __LINE__)
 
 #define LOG_IF(level, condition) \
-        !(condition) ? (void)0 : DummyLogDecorator() & LogMessageDetailedHeader(level).stream()
+        !(condition) ? (void)0 : DummyLogDecorator() & LogMessageHeader(level).stream()
 
 #define LOG_IF_NOT(level, condition) \
-        (condition) ? (void)0 : DummyLogDecorator() & LogMessageDetailedHeader(level).stream()
+        (condition) ? (void)0 : DummyLogDecorator() & LogMessageHeader(level).stream()
 
 #define LOG(level)       LOG_IF(level, true)
 #define CHECK(condition) LOG_IF_NOT(FATAL, condition)
